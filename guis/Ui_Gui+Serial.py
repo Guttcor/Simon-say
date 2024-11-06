@@ -145,7 +145,7 @@ class Ventana1JugadorWindow(QtWidgets.QWidget, Ui_Unjugador):
             while self.paused:
                 time.sleep(0.1)  # Espera hasta que se quite la pausa
 
-            time.sleep(2)
+            time.sleep(0.5)
             self.secuencia(pasos, delay)
             print('TE TOCA')
             self.turn_off_all_leds()
@@ -181,7 +181,7 @@ class Ventana1JugadorWindow(QtWidgets.QWidget, Ui_Unjugador):
         """Genera y muestra una secuencia de colores."""
         self.sequence = [random.choice(['yellow', 'red', 'green', 'blue']) for _ in range(pasos)]
         self.show_sequence(self.sequence, delay)
-        time.sleep(1)
+        time.sleep(0.5)
         self.turn_off_all_leds()
 
     def juego(self, pasos):

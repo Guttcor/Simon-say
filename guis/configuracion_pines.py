@@ -14,15 +14,15 @@ it.start()
 # Declaración de pines con la sintaxis de get_pin
 button_pins = {
     'yellow': board.get_pin('d:5:i'),  
-    'green': board.get_pin('d:3:i'),   
-    'red': board.get_pin('d:4:i'),    
-    'blue': board.get_pin('d:2:i')     
+    'green': board.get_pin('d:2:i'),   
+    'red': board.get_pin('d:3:i'),    
+    'blue': board.get_pin('d:4:i')     
 }
 led_pins = {
-    'yellow': board.get_pin('d:7:o'),
-    'red': board.get_pin('d:6:o'),
-    'green': board.get_pin('d:8:o'),
-    'blue': board.get_pin('d:9:o')
+    'yellow': board.get_pin('d:9:o'),
+    'red': board.get_pin('d:7:o'),
+    'green': board.get_pin('d:6:o'),
+    'blue': board.get_pin('d:8:o')
 }
 
 # Frecuencias para cada color
