@@ -1,0 +1,118 @@
+from configuracion_pines import *
+import random
+button_sequence = []
+sequence = []
+
+class Jugador:
+    def __init__(self, usuario, puntaje=0):
+        self.usuario = usuario
+        self.puntaje = puntaje
+
+    def incrementar_puntaje(self, puntos):
+        self.puntaje += puntos
+
+    def __str__(self):
+        return f"Jugador: {self.usuario}, Puntaje: {self.puntaje}"
+
+class GestorDeJugadores:
+    def __init__(self):
+        self.jugadores = []
+
+    def agregar_jugador(self, usuario: str, puntaje: int):
+        jugador = Jugador(usuario, puntaje)
+        self.jugadores.append(jugador)
+        print("Jugador agregado exitosamente.")
+
+    def mostrar_jugadores(self):
+        return "\n".join(str(jugador) for jugador in self.jugadores)
+    
+# Función para leer el estado de un botón específico
+def read_button(pin):
+    return pin.read() == 1  # Retorna True si el botón está presionado
+
+# Función para el juego sin límite de tiempo
+def juego(pasos):
+    global button_sequence
+    button_sequence = []
+    print("Reproduce la secuencia...")
+
+    while len(button_sequence) < pasos:
+        for button_name, pin in button_pins.items():
+            if read_button(pin):
+                
+                button_sequence.append(button_name)
+                print(f"{button_name} presionado")
+                toggle_led(led_pins[button_name], True)
+                time.sleep(0.5)
+                toggle_led(led_pins[button_name], False)
+                turn_off_all_leds() 
+                time.sleep(0.3)
+
+
+def secuencia(pasos, delay):
+    global sequence
+    sequence = [random.choice(['yellow', 'red', 'green', 'blue']) for _ in range(pasos)]
+    show_sequence(sequence, delay)
+    time.sleep(1)
+    turn_off_all_leds() 
+
+def registrar_jugadores():
+    jugadores = []
+    while True:
+        try:
+            num_jugadores = int(input("Ingresa el número de jugadores (máximo 6): "))
+            if 1 <= num_jugadores <= 6:
+                break
+            else:
+                print("Número de jugadores inválido. Debe ser entre 1 y 6.")
+        except ValueError:
+            print("Por favor, ingresa un número válido.")
+
+    for i in range(num_jugadores):
+        nombre = input(f"Ingresa el nombre del jugador {i + 1}: ")
+        puntos_iniciales = 0
+        GestorDeJugadores.agregar_jugador(nombre, puntos_iniciales)
+
+    return jugadores, num_jugadores
+
+def juego_principal():
+    respuesta = input('¿Quieres iniciar el juego? (y/n) ')
+    user = input('Primero ingresa tu nombre de usuario: ')
+    jugador = Jugador(user)
+
+    while respuesta.lower() == 'y':
+        pasos = 4
+        delay = 1.0
+        nivel = 1
+        puntos_por_nivel = 1000
+        jugador.puntaje = 0
+
+        while nivel <= 10:
+            time.sleep(2) 
+            secuencia(pasos, delay)
+            print('TE TOCA')
+            turn_off_all_leds() 
+            juego(pasos)
+            print(button_sequence)
+            print(sequence)
+            if button_sequence == sequence:
+                print("¡Correcto!")
+                jugador.incrementar_puntaje(puntos_por_nivel)
+                print(jugador)
+                nivel += 1
+                pasos += 1
+                delay = max(0.2, delay - 0.1)
+                turn_off_all_leds() 
+                x = input('Preparado?')
+            else:
+                print("Secuencia incorrecta. Has perdido.")
+                turn_off_all_leds() 
+                print(jugador)
+                break
+            
+
+        if nivel > 10:
+            print('¡FELICIDADES, GANASTE!')
+        respuesta = input('¿Deseas jugar de nuevo? (y/n) ')
+
+juego_principal()
